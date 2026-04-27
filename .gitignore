@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local interview state and generated outputs
+.interview/
+interview-packs/
+feedback.json
+feedback.md
+profile-memory.md
+
+# Runtime logs
+*.log

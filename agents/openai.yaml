@@ -1,0 +1,5 @@
+interface:
+  display_name: "Resume Interview Pack"
+  short_description: "Generate likely interview packs from resume, projects, notes, and knowledge bases"
+  default_prompt: "Use $resume-interview-pack to generate a high-probability interview pack from my resume, resume-backed project directories, interview notes, and knowledge bases."
+
