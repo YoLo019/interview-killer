@@ -2,7 +2,7 @@
 
 # interview-killer
 
-> Resume-backed interview pack skill for Codex
+> 面向技术面试准备的 Codex Skill
 
 [![Skill](https://img.shields.io/badge/skill-resume--interview--pack-0f766e)]()
 [![Runtime](https://img.shields.io/badge/runtime-python%203-3776AB)]()
@@ -10,43 +10,44 @@
 
 </div>
 
-`interview-killer` is a Codex skill package built for technical interview prep.
+`interview-killer` 是一个给 Codex 用的面试题包生成 skill。
 
-It does not generate generic question banks. It reads your resume, the codebases behind your resume projects, your interview notes, and your own knowledge bases, then produces a structured interview pack with likely questions, spoken answer skeletons, expanded answers, and follow-up answers.
+它不是通用题库生成器。它会读取你的简历、简历中对应的项目代码目录、你整理的面经、以及你自己的知识库，然后生成一份更贴近你真实背景的技术面试题包，包括主问题、回答骨架、展开回答、追问和追问简答。
 
-It also keeps a persistent candidate memory and supports an interactive review flow, so each new pack can gradually adapt to your weak spots and already-mastered topics.
+它还会维护一个长期画像，并提供本地交互式反馈页。这样后续生成的题包可以逐步根据你的薄弱点、已掌握主题和最近练习情况做调整。
 
-## What It Does
+## 能做什么
 
-- Generates a high-probability interview pack from four inputs:
-  - resume
-  - resume-backed project directories
-  - interview notes as interviewer-style signals
-  - knowledge bases as answer support
-- Organizes output into five fixed sections:
-  - Project Deep Dive
-  - Principles and Tradeoffs
-  - System Design and Engineering
-  - Fundamentals
-  - Hot AI and Agent Topics
-- Writes packs to local Markdown files for later review
-- Maintains a persistent interview profile under `.interview/`
-- Supports explicit feedback with `weak`, `improving`, and `mastered`
-- Includes a local browser review UI for pack-by-pack feedback
+- 基于四类输入生成高概率技术面试题包
+  - 简历
+  - 简历中对应的项目代码目录
+  - 面经
+  - 知识库
+- 固定按五个部分组织输出
+  - 项目深挖
+  - 原理与方案对比
+  - 系统设计与工程化追问
+  - 经典八股补充
+  - 热门 AI / Agent 题
+- 将题包写入本地 Markdown 文件，方便复习
+- 在 `.interview/` 下维护长期画像和反馈数据
+- 支持 `weak`、`improving`、`mastered` 三类显式反馈
+- 提供本地浏览器反馈页，支持按题包逐题标记
 
-## Use Cases
+## 适用场景
 
-Use this skill when you want to:
+适合这些情况：
 
-- generate likely interview questions from your own resume and projects
-- prepare project deep-dive questions instead of generic template questions
-- add classic backend fundamentals that match your stack
-- add hot AI and agent questions without repeating the same trio every time
-- review your answer quality and update long-term weak spots
+- 想根据自己的简历和项目生成更像真实面试的问题
+- 不想只练通用八股，想重点练项目深挖题
+- 想把面经当作“面试官风格信号”，而不是直接搬运原题
+- 想补充和自己技术栈相关的后端基础题
+- 想额外加入热门 AI / Agent 相关问题，但避免每次都重复同一组三题
+- 想让每次练习结果持续影响后续题包，而不是每次都从零开始
 
-## How It Works
+## 工作方式
 
-The skill reads project-local state from:
+这个 skill 会读取项目内的这些状态文件：
 
 ```text
 .interview/profile.json
@@ -55,57 +56,59 @@ The skill reads project-local state from:
 .interview/feedback.md
 ```
 
-It uses sources in this general order:
+默认的资料优先级大致是：
 
-1. Resume and project responsibilities
-2. Resume-backed project repositories
-3. Interview notes as style and follow-up signals
-4. Explicit feedback
-5. Knowledge bases
-6. Persistent profile memory
-7. Built-in hot-topic references
+1. 简历中的项目描述和职责
+2. 简历对应的项目代码目录
+3. 面经中的关注点、追问方式和提问风格
+4. 你的显式反馈
+5. 知识库
+6. 长期画像
+7. 内置的热门 AI / Agent 话题模板
 
-Generated packs are written to:
+其中面经只作为参考信号，不直接当作原题题库使用。
+
+生成后的题包默认写入：
 
 ```text
 interview-packs/pack-YYYYMMDD.md
 ```
 
-Answer reviews are written to:
+回答点评默认写入：
 
 ```text
 interview-packs/review-YYYYMMDD.md
 ```
 
-## Quick Start
+## 快速开始
 
-### 1. Put the skill in your Codex workspace or skill directory
+### 1. 安装或放置 skill
 
-For a project-local setup:
+项目级用法：
 
 ```text
 .agents/skills/resume-interview-pack/
 ```
 
-For a user-level setup, copy it into your Codex skills directory.
+也可以放到你自己的 Codex 全局 skills 目录里。
 
-### 2. Create your interview profile
+### 2. 创建候选人配置
 
-Create:
+在项目里创建：
 
 ```text
 .interview/profile.json
 ```
 
-Minimal example:
+最小示例：
 
 ```json
 {
   "resume_path": "C:\\Users\\YourName\\resume.md",
   "projects": [
     {
-      "name": "HappyFlow",
-      "path": "D:\\projects\\happyflow"
+      "name": "ProjectName",
+      "path": "D:\\projects\\ProjectName"
     }
   ],
   "materials": {
@@ -119,9 +122,9 @@ Minimal example:
 }
 ```
 
-### 3. Ask Codex to generate a pack
+### 3. 让 Codex 生成题包
 
-Examples:
+示例触发语句：
 
 ```text
 根据我的简历和项目生成高概率面试题
@@ -135,13 +138,13 @@ Examples:
 帮我补一些常问八股和热门 AI / Agent 题
 ```
 
-### 4. Review and feed back
+### 4. 复盘并反馈
 
-This repo also includes a local review tool:
+这个仓库还包含本地反馈服务：
 
 - `scripts/review_server.py`
 
-In the original workspace version, it is commonly paired with a launcher such as:
+在原始工作区版本中，通常会配合这些启动器使用：
 
 ```text
 review-pack.ps1
@@ -149,48 +152,48 @@ review-pack.cmd
 启动题包反馈.cmd
 ```
 
-The review UI lets you:
+反馈页支持：
 
-- choose a generated pack
-- mark each question as `weak`, `improving`, or `mastered`
-- write a short note
-- save feedback back into `.interview/feedback.json`, `.interview/feedback.md`, and `.interview/profile-memory.md`
+- 选择某一份已生成题包
+- 将每道题标记为 `weak`、`improving` 或 `mastered`
+- 填写简短备注
+- 将结果回写到 `.interview/feedback.json`、`.interview/feedback.md` 和 `.interview/profile-memory.md`
 
-## Output Shape
+## 输出结构
 
-Each generated question card follows a fixed structure:
+每道题固定使用这套结构：
 
-1. Question
-2. What It Tests
-3. One-Minute Skeleton
-4. Expanded Answer
-5. Possible Follow-Ups
-6. Follow-Up Quick Answers
-7. Why This Is Likely
+1. 问题
+2. 考察点
+3. 1 分钟回答骨架
+4. 展开版参考答案
+5. 可能追问
+6. 追问简答
+7. 为什么大概率会问
 
-The answers are written in spoken interview language rather than article style.
+整体风格以“面试里能说出口”为目标，不写成知识库原文，也不写成文章腔。
 
-## Hot AI / Agent Topics
+## 热门 AI / Agent 题
 
-The fifth section is not just project-adjacent AI talk.
+第五部分不只是项目相关的 AI 题。
 
-It can include topics such as:
+它还会覆盖这些方向：
 
-- daily AI usage
-- AI coding workflow
-- framework selection
-- agent architecture
-- RAG vs agent boundaries
-- MCP and tool integration
-- safety, permissions, and validation
-- shallow open-source awareness for Hermes, OpenClaw, and CC-like projects
+- 平时如何使用 AI 提效
+- 如何做 AI coding
+- 如何验证 AI 生成结果
+- LangChain、LangGraph、原生 SDK、MCP 这类方案如何选型
+- 为什么选择当前使用的 AI 框架
+- Agent 架构、工具调用、记忆、安全、权限、编排
+- RAG 和 Agent 的边界
+- Hermes、OpenClaw、CC 这类热门开源项目的浅层了解题
 
-The skill also avoids reusing the exact same hot-topic trio in consecutive packs unless:
+同时它会尽量避免连续两版题包重复同一组三个热门题，除非：
 
-- you explicitly ask for it
-- feedback marks it as weak
+- 你明确要求某一类题
+- 反馈里把该主题标记成了 `weak`
 
-## Repository Structure
+## 仓库结构
 
 ```text
 interview-killer/
@@ -211,12 +214,12 @@ interview-killer/
 └── LICENSE
 ```
 
-## Notes
+## 说明
 
-- This repo contains the skill package itself, not your private resume or generated packs.
-- Do not commit your own `.interview/` data or `interview-packs/` outputs into the public repo.
-- If your resume is not plain text or Markdown, convert it before using the skill.
+- 这个仓库只包含 skill 本体，不包含你的私有简历、项目资料和题包结果
+- 不建议把自己的 `.interview/` 数据或 `interview-packs/` 结果提交到公开仓库
+- 如果你的简历不是 Markdown 或纯文本，建议先转成可读文本后再使用
 
 ## License
 
-MIT. See [LICENSE](./LICENSE).
+MIT。见 [LICENSE](./LICENSE)。
