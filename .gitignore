@@ -16,8 +16,10 @@ Thumbs.db
 .idea/
 
 # Local interview state and generated outputs
-.interview/
-interview-packs/
+.interview/*
+!.interview/review-pack.html
+interview-packs/*
+!interview-packs/.gitkeep
 feedback.json
 feedback.md
 profile-memory.md

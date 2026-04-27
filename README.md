@@ -140,16 +140,29 @@ interview-packs/review-YYYYMMDD.md
 
 ### 4. 复盘并反馈
 
-这个仓库还包含本地反馈服务：
+这个仓库已经内置本地反馈服务和启动器：
 
 - `scripts/review_server.py`
+- `review-pack.ps1`
+- `review-pack.cmd`
+- `启动题包反馈.cmd`
 
-在原始工作区版本中，通常会配合这些启动器使用：
+最直接的方式是双击：
 
 ```text
-review-pack.ps1
-review-pack.cmd
 启动题包反馈.cmd
+```
+
+或者在终端里运行：
+
+```text
+review-pack.cmd
+```
+
+如果你不想自动打开浏览器，也可以运行：
+
+```text
+review-pack.ps1 -NoBrowser
 ```
 
 反馈页支持：
@@ -209,6 +222,13 @@ interview-killer/
 │   └── scenario-layout.md
 ├── scripts/
 │   └── review_server.py
+├── .interview/
+│   └── review-pack.html
+├── interview-packs/
+│   └── .gitkeep
+├── review-pack.ps1
+├── review-pack.cmd
+├── 启动题包反馈.cmd
 ├── README.md
 ├── .gitignore
 └── LICENSE

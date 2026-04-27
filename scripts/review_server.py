@@ -162,6 +162,16 @@ def merge_feedback(pack: dict, store: dict) -> dict:
     return {**pack, "items": merged_items}
 
 
+def empty_pack_state() -> dict:
+    return {
+        "pack_id": "",
+        "pack_file": "",
+        "display_date": "",
+        "items": [],
+        "empty": True,
+    }
+
+
 def list_packs() -> list[dict]:
     packs = []
     for pack_path in list_pack_paths():
@@ -433,6 +443,9 @@ class ReviewHandler(BaseHTTPRequestHandler):
                 query = parse_qs(parsed.query)
                 pack_id = query.get("pack", [""])[0]
                 pack_path = find_pack_path(pack_id) if pack_id else self.server.pack_path  # type: ignore[attr-defined]
+                if pack_path is None:
+                    self._send_json(empty_pack_state())
+                    return
                 pack = merge_feedback(parse_pack(pack_path), load_feedback_store())
                 self._send_json(pack)
             except Exception as exc:  # noqa: BLE001
@@ -470,15 +483,23 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
-    pack_path = Path(args.pack).resolve() if args.pack else latest_pack_path()
-    if not pack_path.exists():
+    if args.pack:
+        pack_path = Path(args.pack).resolve()
+    else:
+        pack_paths = list_pack_paths()
+        pack_path = pack_paths[0] if pack_paths else None
+    if pack_path is not None and not pack_path.exists():
         print(f"Pack not found: {pack_path}", file=sys.stderr)
         return 1
 
     server = ThreadingHTTPServer((args.host, args.port), ReviewHandler)
     server.pack_path = pack_path  # type: ignore[attr-defined]
     url = f"http://{args.host}:{args.port}/review-pack.html"
-    print(f"Serving feedback UI for {pack_path}")
+    if pack_path is None:
+        print("Serving feedback UI with no pack loaded yet.")
+        print("Add a file like interview-packs/pack-YYYYMMDD.md, then refresh the page.")
+    else:
+        print(f"Serving feedback UI for {pack_path}")
     print(f"Open: {url}")
     if not args.no_browser:
         try:

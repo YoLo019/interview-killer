@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>题包反馈面板</title>
+  <style>
+    :root {
+      --bg: #f4efe4;
+      --panel: #fffaf2;
+      --ink: #1f2937;
+      --muted: #667085;
+      --line: #d8cdb8;
+      --accent: #0f766e;
+      --accent-2: #134e4a;
+      --weak: #b42318;
+      --improving: #b54708;
+      --mastered: #027a48;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.08), transparent 28%),
+        linear-gradient(180deg, #efe6d6 0%, var(--bg) 100%);
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 56px;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 14px 32px rgba(31, 41, 55, 0.08);
+    }
+    .hero {
+      padding: 22px 24px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+    .meta,
+    .hint,
+    .status-text,
+    .footer-note {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .toolbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 13px;
+      color: #344054;
+    }
+    .select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .select-wrap label {
+      font-size: 13px;
+      color: #344054;
+      white-space: nowrap;
+    }
+    select,
+    input[type="text"],
+    textarea {
+      font: inherit;
+      color: var(--ink);
+    }
+    select {
+      min-width: 220px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    button:hover {
+      background: var(--accent-2);
+    }
+    button.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+    .card {
+      padding: 18px 18px 16px;
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      line-height: 1.35;
+    }
+    .section-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #efe7d8;
+      color: #5b4636;
+      font-size: 12px;
+    }
+    .question-block {
+      margin-top: 12px;
+      white-space: pre-wrap;
+      line-height: 1.72;
+    }
+    details {
+      margin-top: 12px;
+      border-top: 1px dashed var(--line);
+      padding-top: 10px;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .status-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0 10px;
+    }
+    .status-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 14px;
+    }
+    .status-option[data-status="weak"] { color: var(--weak); }
+    .status-option[data-status="improving"] { color: var(--improving); }
+    .status-option[data-status="mastered"] { color: var(--mastered); }
+    label.field {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    input[type="text"],
+    textarea {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+    .footer-note {
+      margin-top: 20px;
+      padding: 0 2px;
+    }
+    @media (max-width: 760px) {
+      .toolbar {
+        position: static;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .toolbar-left,
+      .toolbar-right {
+        justify-content: space-between;
+      }
+      .select-wrap {
+        width: 100%;
+      }
+      select {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero panel">
+      <h1>题包反馈面板</h1>
+      <div class="meta" id="packMeta">正在加载题包...</div>
+      <div class="hint">
+        看完每道题后，直接标记 `weak`、`improving` 或 `mastered`。保存后会同步更新
+        `feedback.json`、`feedback.md` 和 `profile-memory.md`。
+      </div>
+    </section>
+
+    <section class="toolbar panel">
+      <div class="toolbar-left">
+        <div class="select-wrap">
+          <label for="packSelect">当前题包</label>
+          <select id="packSelect"></select>
+        </div>
+        <span class="pill" id="countWeak">weak: 0</span>
+        <span class="pill" id="countImproving">improving: 0</span>
+        <span class="pill" id="countMastered">mastered: 0</span>
+      </div>
+      <div class="toolbar-right">
+        <span class="status-text" id="saveStatus">尚未保存</span>
+        <button class="secondary" id="resetButton" type="button">重置本页状态</button>
+        <button id="saveButton" type="button">保存反馈</button>
+      </div>
+    </section>
+
+    <main class="grid" id="questionList"></main>
+
+    <div class="footer-note">
+      建议规则：
+      `weak` 用于你当前讲不稳、讲不清、指标或边界明显会被追问的点；
+      `improving` 用于已经有答题骨架但还不够稳定的点；
+      `mastered` 用于你能稳定讲出口，并且和项目事实一致的点。
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      pack: null,
+      items: [],
+      packs: [],
+    };
+
+    const listEl = document.getElementById("questionList");
+    const packMetaEl = document.getElementById("packMeta");
+    const saveStatusEl = document.getElementById("saveStatus");
+    const packSelectEl = document.getElementById("packSelect");
+    const saveButtonEl = document.getElementById("saveButton");
+    const resetButtonEl = document.getElementById("resetButton");
+
+    function setSaveStatus(text) {
+      saveStatusEl.textContent = text;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function currentPackQuery() {
+      return new URLSearchParams(window.location.search).get("pack") || "";
+    }
+
+    function updateUrl(packId) {
+      const url = new URL(window.location.href);
+      if (packId) {
+        url.searchParams.set("pack", packId);
+      } else {
+        url.searchParams.delete("pack");
+      }
+      window.history.replaceState({}, "", url);
+    }
+
+    function updateCounts() {
+      const counts = { weak: 0, improving: 0, mastered: 0 };
+      state.items.forEach((item) => {
+        if (counts[item.status] !== undefined) {
+          counts[item.status] += 1;
+        }
+      });
+      document.getElementById("countWeak").textContent = `weak: ${counts.weak}`;
+      document.getElementById("countImproving").textContent = `improving: ${counts.improving}`;
+      document.getElementById("countMastered").textContent = `mastered: ${counts.mastered}`;
+    }
+
+    function updateActionState() {
+      const disabled = !state.pack || !state.pack.pack_id;
+      saveButtonEl.disabled = disabled;
+      resetButtonEl.disabled = disabled;
+      saveButtonEl.style.opacity = disabled ? "0.55" : "1";
+      resetButtonEl.style.opacity = disabled ? "0.55" : "1";
+      saveButtonEl.style.cursor = disabled ? "not-allowed" : "pointer";
+      resetButtonEl.style.cursor = disabled ? "not-allowed" : "pointer";
+    }
+
+    function renderPackOptions() {
+      const wanted = state.pack?.pack_id || currentPackQuery();
+      packSelectEl.innerHTML = state.packs.map((pack) => `
+        <option value="${escapeHtml(pack.pack_id)}" ${pack.pack_id === wanted ? "selected" : ""}>
+          ${escapeHtml(pack.pack_id)} | ${escapeHtml(pack.display_date)}
+        </option>
+      `).join("");
+    }
+
+    function renderItem(item) {
+      const card = document.createElement("article");
+      card.className = "card panel";
+      card.innerHTML = `
+        <div class="section-label">${escapeHtml(item.section)}</div>
+        <h2>${escapeHtml(item.question_id)}. ${escapeHtml(item.title)}</h2>
+        <div class="question-block">${escapeHtml(item.question || "无正文")}</div>
+
+        <details>
+          <summary>查看答题骨架和展开答案</summary>
+          <div class="question-block"><strong>What It Tests</strong>\n${escapeHtml(item.what_it_tests || "")}</div>
+          <div class="question-block"><strong>One-Minute Skeleton</strong>\n${escapeHtml(item.one_minute_skeleton || "")}</div>
+          <div class="question-block"><strong>Expanded Answer</strong>\n${escapeHtml(item.expanded_answer || "")}</div>
+          <div class="question-block"><strong>Possible Follow-Ups</strong>\n${escapeHtml(item.possible_follow_ups || "")}</div>
+        </details>
+
+        <div class="status-group">
+          ${["weak", "improving", "mastered", "skip"].map((status) => `
+            <label class="status-option" data-status="${status}">
+              <input type="radio" name="${item.question_id}" value="${status}" ${item.status === status ? "checked" : ""} />
+              <span>${status}</span>
+            </label>
+          `).join("")}
+        </div>
+
+        <label class="field">
+          回写到画像里的主题标签
+          <input type="text" data-field="topic_label" value="${escapeHtml(item.topic_label || item.title)}" />
+        </label>
+
+        <label class="field">
+          备注
+          <textarea data-field="note" placeholder="可选。比如“指标口径没准备好”或“这题已经能稳定讲 1 分钟”">${escapeHtml(item.note || "")}</textarea>
+        </label>
+      `;
+
+      card.querySelectorAll(`input[name="${item.question_id}"]`).forEach((input) => {
+        input.addEventListener("change", (event) => {
+          item.status = event.target.value;
+          updateCounts();
+          setSaveStatus("有未保存改动");
+        });
+      });
+
+      card.querySelector('[data-field="topic_label"]').addEventListener("input", (event) => {
+        item.topic_label = event.target.value;
+        setSaveStatus("有未保存改动");
+      });
+
+      card.querySelector('[data-field="note"]').addEventListener("input", (event) => {
+        item.note = event.target.value;
+        setSaveStatus("有未保存改动");
+      });
+
+      return card;
+    }
+
+    function renderPack() {
+      if (!state.pack || !state.pack.pack_id) {
+        packMetaEl.textContent = "当前还没有可反馈的题包。先生成一份 pack-YYYYMMDD.md，再刷新本页。";
+        listEl.innerHTML = "";
+        updateCounts();
+        updateActionState();
+        return;
+      }
+      packMetaEl.textContent = `当前题包: ${state.pack.pack_id} | 文件: ${state.pack.pack_file} | 日期: ${state.pack.display_date}`;
+      listEl.innerHTML = "";
+      state.items.forEach((item) => listEl.appendChild(renderItem(item)));
+      updateCounts();
+      updateActionState();
+    }
+
+    async function loadPacks() {
+      const response = await fetch("/api/packs");
+      if (!response.ok) {
+        throw new Error("加载题包列表失败");
+      }
+      const data = await response.json();
+      state.packs = data.packs || [];
+      renderPackOptions();
+    }
+
+    async function loadState(packId = currentPackQuery()) {
+      const url = packId ? `/api/state?pack=${encodeURIComponent(packId)}` : "/api/state";
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("加载题包失败");
+      }
+      const data = await response.json();
+      state.pack = {
+        pack_id: data.pack_id,
+        pack_file: data.pack_file,
+        display_date: data.display_date,
+        empty: Boolean(data.empty),
+      };
+      state.items = data.items.map((item) => ({
+        ...item,
+        status: item.status || "",
+        topic_label: item.topic_label || item.title,
+        note: item.note || "",
+      }));
+      updateUrl(state.pack.pack_id);
+      renderPackOptions();
+      renderPack();
+      setSaveStatus(state.pack.pack_id ? "已加载" : "当前没有题包");
+    }
+
+    async function saveState() {
+      const payload = {
+        pack_id: state.pack.pack_id,
+        pack_file: state.pack.pack_file,
+        items: state.items.map((item) => ({
+          question_id: item.question_id,
+          title: item.title,
+          section: item.section,
+          topic_label: item.topic_label,
+          status: item.status,
+          note: item.note,
+        })),
+      };
+
+      setSaveStatus("保存中...");
+      const response = await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "保存失败");
+      }
+      updateCounts();
+      setSaveStatus(`已保存 ${data.saved_at}`);
+    }
+
+    function resetState() {
+      if (!state.pack || !state.pack.pack_id) {
+        return;
+      }
+      state.items.forEach((item) => {
+        item.status = "";
+        item.topic_label = item.title;
+        item.note = "";
+      });
+      renderPack();
+      setSaveStatus("已重置，尚未保存");
+    }
+
+    packSelectEl.addEventListener("change", async (event) => {
+      try {
+        await loadState(event.target.value);
+      } catch (error) {
+        packMetaEl.textContent = `切换题包失败: ${error.message}`;
+        setSaveStatus("切换失败");
+      }
+    });
+
+    document.getElementById("saveButton").addEventListener("click", async () => {
+      try {
+        await saveState();
+      } catch (error) {
+        setSaveStatus(`保存失败: ${error.message}`);
+      }
+    });
+
+    document.getElementById("resetButton").addEventListener("click", resetState);
+
+    (async () => {
+      try {
+        await loadPacks();
+        await loadState();
+      } catch (error) {
+        packMetaEl.textContent = `加载失败: ${error.message}`;
+        setSaveStatus("加载失败");
+        updateActionState();
+      }
+    })();
+  </script>
+</body>
+</html>
