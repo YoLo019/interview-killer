@@ -18,12 +18,12 @@ Recommended shape:
   ],
   "materials": {
     "interview_notes": [
-      "C:/Users/Administrator/Desktop/面经/面经.md"
+      "C:/path/to/interview-notes.md"
     ],
     "knowledge_bases": [
-      "C:/Users/Administrator/Desktop/面经/Agent知识库.md",
-      "C:/Users/Administrator/Desktop/面经/RAG知识库.md",
-      "C:/Users/Administrator/Desktop/面经/Prompt上下文Harness知识库.md"
+      "C:/path/to/agent-kb.md",
+      "C:/path/to/rag-kb.md",
+      "C:/path/to/prompt-harness-kb.md"
     ]
   }
 }
@@ -36,6 +36,7 @@ Rules:
 - `projects[].name` should match the project name used in the resume as closely as possible.
 - `projects[].resume_claim` is optional. Add it only when the resume description is too short or you want the skill to defend a narrower project framing.
 - `interview_notes` are style signals, not a raw bank of final questions.
+- `projects[].path` is mainly used to ground answers, validate claims, and prepare realistic follow-ups. By default it should not become the primary source of main interview questions.
 - `knowledge_bases` support answers for project, principle, engineering, and fundamentals sections.
 
 ## `profile-memory.md`
@@ -115,7 +116,7 @@ Recommended shape:
           "section": "Project Deep Dive",
           "topic_label": "HappyFlow 项目归因边界",
           "status": "weak",
-          "note": "上游能力和自己改造的边界还不够稳"
+          "note": "上游能力和自己改造部分的边界还不够稳"
         }
       ]
     }

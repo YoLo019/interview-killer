@@ -33,6 +33,8 @@ Use this exact structure for every question card:
 
 Rules:
 
+- Keep the main question aligned with what an interviewer could reasonably ask from the resume and interview context alone.
+- Use project code and repository evidence mainly to ground the answer, sharpen follow-ups, and mark uncertainty.
 - Use spoken language, not essay style.
 - Keep the skeleton compact enough to memorize.
 - Keep the expanded answer specific enough to sound grounded.

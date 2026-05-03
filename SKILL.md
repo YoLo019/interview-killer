@@ -50,9 +50,9 @@ Only rebuild the memory file when the user explicitly asks to refresh, says the 
 Use sources in this order:
 
 1. Resume project descriptions and responsibilities
-2. Resume-backed project directories
-3. Interview notes as style and attention signals
-4. Explicit user feedback from `.interview/feedback.json` and `.interview/feedback.md`
+2. Interview notes as style and attention signals
+3. Explicit user feedback from `.interview/feedback.json` and `.interview/feedback.md`
+4. Resume-backed project directories as answer evidence and grounding support
 5. Knowledge bases for project, principle, engineering, and fundamentals answers
 6. Persistent profile memory for historical weak spots and stable phrasing
 7. Hot AI and agent topic references for general and current-practice answers
@@ -65,6 +65,13 @@ Instead, infer:
 - how deeply they push on project details
 - whether they bias toward project, principles, systems, or fundamentals
 - what follow-up style is common
+
+Treat project code directories differently from resume and interview notes:
+
+- do not let code structure directly define the main interview question set by default
+- use code primarily to strengthen answers, validate claims, and prepare plausible follow-ups
+- do not introduce a major project question solely because a repository contains a module, dependency, or upstream framework reference
+- only let code become a primary question source when the user explicitly asks for code-deep-dive or project-authenticity interrogation
 
 ## Reading Strategy
 
@@ -92,6 +99,13 @@ Use a bounded read strategy. Prefer:
 - clear entrypoints
 - top-level module layout
 - a small number of likely core files
+
+By default, use project directories for answer support, not for question invention.  
+Specifically:
+
+- use visible project evidence to make `Expanded Answer` and `Follow-Up Quick Answers` more grounded
+- use visible project evidence to check whether a resume claim seems supported, weakly supported, or not yet confirmable
+- use visible project evidence to prepare likely engineering follow-ups after a resume-driven main question is already selected
 
 Do not pretend to understand a whole repository if the visible evidence is thin.  
 If a resume claim cannot be grounded from the inspected project files, mark the answer as uncertain rather than inventing support.
@@ -152,6 +166,12 @@ Generate about 10 questions by default with this target distribution:
 
 If the available material is too sparse, keep the same section structure but reduce question count rather than fabricating details.
 
+For question generation, separate source roles clearly:
+
+- `Question` should be driven mainly by the resume, the resume-visible project framing, and the inferred interviewer style from interview notes
+- `Expanded Answer` and `Follow-Up Quick Answers` may use project code, knowledge bases, and stable profile memory to make the answer concrete
+- do not let repository-only details silently become the main question unless the user explicitly asks for a code-driven deep dive
+
 Every question card must use this order:
 
 1. Question
@@ -184,7 +204,9 @@ When the user asks to generate a question pack:
    - revisit weak topics more often
    - keep improving topics warm
    - reduce over-repetition of already-mastered topics unless they are core resume risk points
-7. Generate the five required sections.
+7. Generate the five required sections with this split:
+   - main questions come from resume framing plus interview-note style signals
+   - project directories support answers, grounding, and follow-up realism
 8. Add `Source Summary` only when the user explicitly asks for provenance, when the configured source set changed materially, or when the pack would otherwise be hard to interpret.
 9. Add a short `Interview Notes Influence` section explaining how the notes shaped the pack without copying original questions.
 10. Write the final output to `interview-packs/pack-YYYYMMDD.md`.
@@ -276,6 +298,7 @@ Examples include:
 
 Do not turn this into a generic random FAQ dump.  
 Tie the question choice back to the candidate's projects whenever possible.
+When using project evidence here, use it to sharpen the answer and likely follow-ups, not to override a resume-driven main question choice.
 
 ## Hot AI and Agent Topics
 
